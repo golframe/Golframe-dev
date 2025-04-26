@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'colors.dart';
+import 'find_id_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -100,7 +101,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const Spacer(),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const FindIdScreen(),
+                          ),
+                        );
+                      },
                       child: Text(
                         '아이디 찾기',
                         style: TextStyle(color: AppColors.main01),
