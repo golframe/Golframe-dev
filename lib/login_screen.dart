@@ -114,7 +114,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const ResetPasswordScreen(),
+                          ),
+                        );
+                      },
                       child: Text(
                         '비밀번호 찾기',
                         style: TextStyle(color: AppColors.main01),
