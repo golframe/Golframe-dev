@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'colors.dart';
 import 'find_id_screen.dart';
 import 'terms_agreement_screen.dart';
+import 'main_home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -12,6 +13,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isRememberId = false;
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _pwController = TextEditingController();
+  String? _errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Divider(color: AppColors.light01, thickness: 1, height: 1),
                 const SizedBox(height: 32),
                 TextField(
+                  controller: _idController,
                   decoration: InputDecoration(
                     hintText: '아이디(이메일) 입력',
                     filled: true,
@@ -63,6 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
                 TextField(
+                  controller: _pwController,
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: '비밀번호 입력',
@@ -129,18 +135,46 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                // 에러 메시지 예시
-                // const SizedBox(height: 8),
-                // Text(
-                //   '에러가 있을 시 메시지가 출력됩니다.',
-                //   style: TextStyle(color: AppColors.mainRed06, fontSize: 14),
-                // ),
+                if (_errorText != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      _errorText!,
+                      style: const TextStyle(
+                        color: AppColors.mainRed06,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
                 const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   height: 56,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      final id = _idController.text.trim();
+                      final pw = _pwController.text.trim();
+                      String? role;
+                      if (id == 'abc@golf.kr' && pw == '12345!') {
+                        role = '무료회원';
+                      } else if (id == 'def@golf.kr' && pw == '12345!') {
+                        role = '프로회원';
+                      }
+                      if (role != null) {
+                        setState(() {
+                          _errorText = null;
+                        });
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => MainHomeScreen(role: role!),
+                          ),
+                        );
+                      } else {
+                        setState(() {
+                          _errorText = '아이디 또는 비밀번호가 올바르지 않습니다.';
+                        });
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.main01,
                       shape: RoundedRectangleBorder(
