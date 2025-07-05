@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
+import 'edit_profile_screen.dart';
+import 'change_password_screen.dart';
 
 class MyTab extends StatelessWidget {
   final String role;
@@ -53,8 +55,31 @@ class MyTab extends StatelessWidget {
         const SizedBox(height: 32),
         _SectionTitle('계정관리'),
         _MyDivider(),
-        _MenuItem(title: '정보수정', onTap: () {}),
-        _MenuItem(title: '비밀번호 변경', onTap: () {}),
+        _MenuItem(
+          title: '정보수정',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (_) => EditProfileScreen(
+                      email: 'abc@gmail.com',
+                      nickname: nickname,
+                      career: '2',
+                    ),
+              ),
+            );
+          },
+        ),
+        _MenuItem(
+          title: '비밀번호 변경',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => ChangePasswordScreen()),
+            );
+          },
+        ),
         const SizedBox(height: 32),
         _SectionTitle('결제관리'),
         _MyDivider(),
