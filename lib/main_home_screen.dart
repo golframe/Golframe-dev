@@ -2,25 +2,26 @@ import 'package:flutter/material.dart';
 import 'colors.dart';
 import 'video_detail_screen.dart';
 import 'summary_tab.dart';
+import 'plan_tab.dart';
 
 class MainHomeScreen extends StatefulWidget {
   final String role; // '무료회원' 또는 '프로회원'
   const MainHomeScreen({Key? key, required this.role}) : super(key: key);
 
   @override
-  State<MainHomeScreen> createState() => _MainHomeScreenState();
+  State<MainHomeScreen> createState() => MainHomeScreenState();
 }
 
-class _MainHomeScreenState extends State<MainHomeScreen> {
-  int _selectedIndex = 0;
+class MainHomeScreenState extends State<MainHomeScreen> {
+  int selectedIndex = 0;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final args = ModalRoute.of(context)?.settings.arguments;
-    if (args is int && args != _selectedIndex) {
+    if (args is int && args != selectedIndex) {
       setState(() {
-        _selectedIndex = args;
+        selectedIndex = args;
       });
     }
   }
@@ -37,7 +38,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           : [
             _TabItem('홈', Icons.home, _HomeTab(onGoToDetail: _goToDetail)),
             _TabItem('요약본', Icons.menu, SummaryTab(role: widget.role)),
-            _TabItem('요금제', Icons.attach_money, const _PlanTab()),
+            _TabItem('요금제', Icons.attach_money, PlanTab()),
             _TabItem('마이', Icons.person, const _MyTab()),
           ];
 
@@ -61,15 +62,15 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           ],
         ),
       ),
-      body: _tabs[_selectedIndex].screen,
+      body: _tabs[selectedIndex].screen,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
         selectedItemColor: AppColors.main01,
         unselectedItemColor: AppColors.grey01,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-        currentIndex: _selectedIndex,
-        onTap: (i) => setState(() => _selectedIndex = i),
+        currentIndex: selectedIndex,
+        onTap: (i) => setState(() => selectedIndex = i),
         items: [
           for (final tab in _tabs)
             BottomNavigationBarItem(icon: Icon(tab.icon), label: tab.label),
@@ -98,11 +99,11 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     );
     if (result == 'go_summary') {
       setState(() {
-        _selectedIndex = 1;
+        selectedIndex = 1;
       });
     } else if (result == 'go_plan') {
       setState(() {
-        _selectedIndex = 2;
+        selectedIndex = 2;
       });
     }
   }
@@ -451,14 +452,6 @@ class _VideoCard extends StatelessWidget {
         const SizedBox(height: 16),
       ],
     );
-  }
-}
-
-class _PlanTab extends StatelessWidget {
-  const _PlanTab();
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('요금제 탭'));
   }
 }
 

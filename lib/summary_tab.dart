@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'summary_detail_screen.dart';
+import 'main_home_screen.dart';
 
 class SummaryTab extends StatefulWidget {
   final String role;
@@ -42,9 +43,11 @@ class _SummaryTabState extends State<SummaryTab> {
   bool showDeleteComplete = false;
 
   void _goToPlanTab() {
-    final mainState = context.findAncestorStateOfType<State>();
+    final mainState = context.findAncestorStateOfType<MainHomeScreenState>();
     if (mainState != null && mainState.mounted) {
-      // 실제 구현에서는 _selectedIndex = 2로 이동하는 로직 필요
+      mainState.setState(() {
+        mainState.selectedIndex = 2;
+      });
     }
   }
 
