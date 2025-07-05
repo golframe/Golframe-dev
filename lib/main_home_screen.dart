@@ -4,10 +4,11 @@ import 'video_detail_screen.dart';
 import 'summary_tab.dart';
 import 'plan_tab.dart';
 import 'recommend_tab.dart';
+import 'my_tab.dart';
 
 class MainHomeScreen extends StatefulWidget {
   final String role; // '무료회원' 또는 '프로회원'
-  const MainHomeScreen({Key? key, required this.role}) : super(key: key);
+  const MainHomeScreen({super.key, required this.role});
 
   @override
   State<MainHomeScreen> createState() => MainHomeScreenState();
@@ -38,13 +39,39 @@ class MainHomeScreenState extends State<MainHomeScreen> {
               Icons.inventory_2,
               RecommendTab(role: widget.role),
             ),
-            _TabItem('마이', Icons.person, const _MyTab()),
+            _TabItem(
+              '마이',
+              Icons.person,
+              MyTab(
+                role: widget.role,
+                nickname: 'ab333',
+                joinDate: '2025.03.01',
+                plan: widget.role == '프로회원' ? '프로 요금제' : '무료 요금제',
+                onGoToPlanTab:
+                    () => setState(() {
+                      selectedIndex = 2;
+                    }),
+              ),
+            ),
           ]
           : [
             _TabItem('홈', Icons.home, _HomeTab(onGoToDetail: _goToDetail)),
             _TabItem('요약본', Icons.menu, SummaryTab(role: widget.role)),
             _TabItem('요금제', Icons.attach_money, PlanTab()),
-            _TabItem('마이', Icons.person, const _MyTab()),
+            _TabItem(
+              '마이',
+              Icons.person,
+              MyTab(
+                role: widget.role,
+                nickname: 'ab333',
+                joinDate: '2025.03.01',
+                plan: widget.role == '프로회원' ? '프로 요금제' : '무료 요금제',
+                onGoToPlanTab:
+                    () => setState(() {
+                      selectedIndex = 2;
+                    }),
+              ),
+            ),
           ];
 
   @override
@@ -457,13 +484,5 @@ class _VideoCard extends StatelessWidget {
         const SizedBox(height: 16),
       ],
     );
-  }
-}
-
-class _MyTab extends StatelessWidget {
-  const _MyTab();
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('마이 탭'));
   }
 }
