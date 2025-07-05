@@ -82,6 +82,61 @@ class _HomeTab extends StatefulWidget {
 class _HomeTabState extends State<_HomeTab> {
   final TextEditingController _searchController = TextEditingController();
   bool _isSearched = false;
+  bool _hasResult = false;
+  String? _errorText;
+
+  void _onSearch() {
+    final keyword = _searchController.text.trim();
+    if (keyword.isEmpty) {
+      setState(() {
+        _isSearched = false;
+        _hasResult = false;
+        _errorText = '검색어를 반드시 입력해주세요';
+      });
+      return;
+    }
+    if (keyword == '김국진 골프 레슨') {
+      setState(() {
+        _isSearched = true;
+        _hasResult = true;
+        _errorText = null;
+      });
+    } else {
+      setState(() {
+        _isSearched = true;
+        _hasResult = false;
+        _errorText = '검색어가 존재하지 않습니다.';
+      });
+    }
+  }
+
+  void _onClear() {
+    setState(() {
+      _searchController.clear();
+      _isSearched = false;
+      _hasResult = false;
+      _errorText = null;
+    });
+  }
+
+  void _goToDetail(
+    String image,
+    String title,
+    String desc,
+    List<String> summary,
+  ) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder:
+            (_) => VideoDetailScreen(
+              image: image,
+              title: title,
+              desc: desc,
+              summary: summary,
+            ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,49 +146,67 @@ class _HomeTabState extends State<_HomeTab> {
         // 검색창
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: '검색어를 입력하세요.',
-                    prefixIcon: const Icon(Icons.search),
-                    filled: true,
-                    fillColor: AppColors.light02,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: '검색어를 입력하세요.',
+                        prefixIcon: const Icon(Icons.search),
+                        suffixIcon:
+                            _searchController.text.isNotEmpty
+                                ? IconButton(
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: _onClear,
+                                )
+                                : null,
+                        filled: true,
+                        fillColor: AppColors.light02,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      onChanged: (_) {
+                        setState(() {}); // suffixIcon 갱신용
+                      },
+                      onSubmitted: (_) => _onSearch(),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              SizedBox(
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _isSearched =
-                          _searchController.text.trim() == '김국진 골프 레슨';
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.main01,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    height: 48,
+                    width: 48,
+                    child: ElevatedButton(
+                      onPressed: _onSearch,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.main01,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: const Icon(Icons.search, color: Colors.white),
                     ),
                   ),
-                  child: const Text(
-                    '검색',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                ],
+              ),
+              if (_errorText != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, left: 4.0),
+                  child: Text(
+                    _errorText!,
+                    style: const TextStyle(color: Colors.red, fontSize: 14),
                   ),
                 ),
-              ),
             ],
           ),
         ),
-        if (_isSearched) ...[
+        if (_isSearched && _hasResult) ...[
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
             child: Text(
@@ -153,6 +226,20 @@ class _HomeTabState extends State<_HomeTab> {
               '아이언 샷과 자신감 있는 스윙',
               '최종 정리 및 영상 마무리',
             ],
+            onTap:
+                () => _goToDetail(
+                  'assets/video1.png',
+                  '김국진의 어프로치',
+                  '김국진의 스윙은 어떻게 나오는 걸까? 김국진의 골프레슨!',
+                  const [
+                    '스윙의 기본 원리',
+                    '손목의 역할',
+                    '점잖다 폈다의 중요성',
+                    '임팩트 순간의 기술',
+                    '아이언 샷과 자신감 있는 스윙',
+                    '최종 정리 및 영상 마무리',
+                  ],
+                ),
           ),
           _VideoCard(
             image: 'assets/video2.png',
@@ -163,12 +250,30 @@ class _HomeTabState extends State<_HomeTab> {
               '멈추지 않는 스윙의 중요성',
               '골프 드라이버 스윙 요령',
             ],
+            onTap:
+                () => _goToDetail(
+                  'assets/video2.png',
+                  '김국진 골프 특강 #1',
+                  '드라이버 레슨과 김국진의 골프 스타일',
+                  const [
+                    '드라이버 레슨과 김국진의 골프 스타일',
+                    '멈추지 않는 스윙의 중요성',
+                    '골프 드라이버 스윙 요령',
+                  ],
+                ),
           ),
           _VideoCard(
             image: 'assets/video3.png',
             title: '백스윙의 3포인트',
             desc: '백스윙 딱 이 3가지만 알고계세요!! 김국진 백스윙의 모든것!',
             summary: const ['백스윙의 중요 요소', '백스윙 연습의 중요 포인트', '백스윙의 기본 원리'],
+            onTap:
+                () => _goToDetail(
+                  'assets/video3.png',
+                  '백스윙의 3포인트',
+                  '백스윙 딱 이 3가지만 알고계세요!! 김국진 백스윙의 모든것!',
+                  const ['백스윙의 중요 요소', '백스윙 연습의 중요 포인트', '백스윙의 기본 원리'],
+                ),
           ),
           _VideoCard(
             image: 'assets/video4.png',
@@ -179,6 +284,17 @@ class _HomeTabState extends State<_HomeTab> {
               '골프채를 이용한 양용은의 스윙 연습 방법',
               '방향 설정의 중요성',
             ],
+            onTap:
+                () => _goToDetail(
+                  'assets/video4.png',
+                  '양용은프로의 원포인트 레슨',
+                  '양용은 프로가 알려주는 스윙 연습 비법! 연습할 때 이것 하나만 있으면 충분!?',
+                  const [
+                    '안정된 스윙을 위한 원리',
+                    '골프채를 이용한 양용은의 스윙 연습 방법',
+                    '방향 설정의 중요성',
+                  ],
+                ),
           ),
         ] else ...[
           // 기존 홈 탭 기본 영상 카드들
@@ -192,18 +308,44 @@ class _HomeTabState extends State<_HomeTab> {
               '아이언 샷과 자신감 있는 스윙',
               '정리 및 영상 마무리',
             ],
+            onTap:
+                () => _goToDetail(
+                  'assets/video1.png',
+                  '김국진의 어프로치',
+                  '김국진의 스윙은 어떻게 나오는 걸까? 김국진의 골프레슨!',
+                  const [
+                    '스윙의 역할',
+                    '점잖다 폈다의 중요성',
+                    '아이언 샷과 자신감 있는 스윙',
+                    '정리 및 영상 마무리',
+                  ],
+                ),
           ),
           _VideoCard(
             image: 'assets/video2.png',
             title: '김국진 골프 특강 #1',
             desc: '드라이버 레슨과 김국진의 골프 스타일',
             summary: const ['드라이버 대충 쳐도 잘 나가는 법', '골프 드라이버 스윙 요령'],
+            onTap:
+                () => _goToDetail(
+                  'assets/video2.png',
+                  '김국진 골프 특강 #1',
+                  '드라이버 레슨과 김국진의 골프 스타일',
+                  const ['드라이버 대충 쳐도 잘 나가는 법', '골프 드라이버 스윙 요령'],
+                ),
           ),
           _VideoCard(
             image: 'assets/video3.png',
             title: '백스윙의 3포인트',
             desc: '백스윙 딱 이 3가지만 알고계세요!! 김국진 백스윙의 모든것!',
             summary: const ['백스윙의 중요 요소', '백스윙 연습의 중요 포인트', '백스윙의 기본 원리'],
+            onTap:
+                () => _goToDetail(
+                  'assets/video3.png',
+                  '백스윙의 3포인트',
+                  '백스윙 딱 이 3가지만 알고계세요!! 김국진 백스윙의 모든것!',
+                  const ['백스윙의 중요 요소', '백스윙 연습의 중요 포인트', '백스윙의 기본 원리'],
+                ),
           ),
           _VideoCard(
             image: 'assets/video4.png',
@@ -214,6 +356,17 @@ class _HomeTabState extends State<_HomeTab> {
               '골프채를 이용한 양용은의 스윙 연습 방법',
               '방향 설정의 중요성',
             ],
+            onTap:
+                () => _goToDetail(
+                  'assets/video4.png',
+                  '양용은프로의 원포인트 레슨',
+                  '양용은 프로가 알려주는 스윙 연습 비법! 연습할 때 이것 하나만 있으면 충분!?',
+                  const [
+                    '안정된 스윙을 위한 원리',
+                    '골프채를 이용한 양용은의 스윙 연습 방법',
+                    '방향 설정의 중요성',
+                  ],
+                ),
           ),
         ],
       ],
@@ -226,23 +379,31 @@ class _VideoCard extends StatelessWidget {
   final String title;
   final String desc;
   final List<String> summary;
+  final VoidCallback? onTap;
   const _VideoCard({
     required this.image,
     required this.title,
     required this.desc,
     required this.summary,
+    this.onTap,
   });
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Image.asset(image, fit: BoxFit.cover),
+        GestureDetector(
+          onTap: onTap,
+          child: Image.asset(image, fit: BoxFit.cover),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          child: GestureDetector(
+            onTap: onTap,
+            child: Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
           ),
         ),
         Padding(
@@ -297,5 +458,58 @@ class _MyTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(child: Text('마이 탭'));
+  }
+}
+
+class VideoDetailScreen extends StatelessWidget {
+  final String image;
+  final String title;
+  final String desc;
+  final List<String> summary;
+  const VideoDetailScreen({
+    required this.image,
+    required this.title,
+    required this.desc,
+    required this.summary,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0.5,
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(24),
+          children: [
+            Image.asset(image, fit: BoxFit.cover),
+            const SizedBox(height: 24),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            Text(desc, style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 24),
+            const Text(
+              '영상 요약',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            ...summary.asMap().entries.map(
+              (e) => Text(
+                '${e.key + 1}. ${e.value}',
+                style: const TextStyle(fontSize: 15),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
