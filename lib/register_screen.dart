@@ -3,7 +3,7 @@ import 'colors.dart';
 import 'register_complete_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -15,11 +15,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _careerController = TextEditingController();
   String? _unit = '년'; // '년' 디폴트, '월' 추가
   String? _errorText;
-
-  final List<String> _units = List.generate(
-    100,
-    (i) => (DateTime.now().year - i).toString(),
-  );
 
   void _register() {
     final email = _emailController.text.trim();
