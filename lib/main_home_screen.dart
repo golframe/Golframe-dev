@@ -3,6 +3,7 @@ import 'colors.dart';
 import 'video_detail_screen.dart';
 import 'summary_tab.dart';
 import 'plan_tab.dart';
+import 'recommend_tab.dart';
 
 class MainHomeScreen extends StatefulWidget {
   final String role; // '무료회원' 또는 '프로회원'
@@ -32,7 +33,11 @@ class MainHomeScreenState extends State<MainHomeScreen> {
           ? [
             _TabItem('홈', Icons.home, _HomeTab(onGoToDetail: _goToDetail)),
             _TabItem('요약본', Icons.menu, SummaryTab(role: widget.role)),
-            _TabItem('추천상품', Icons.inventory_2, const _RecommendTab()),
+            _TabItem(
+              '추천상품',
+              Icons.inventory_2,
+              RecommendTab(role: widget.role),
+            ),
             _TabItem('마이', Icons.person, const _MyTab()),
           ]
           : [
@@ -452,14 +457,6 @@ class _VideoCard extends StatelessWidget {
         const SizedBox(height: 16),
       ],
     );
-  }
-}
-
-class _RecommendTab extends StatelessWidget {
-  const _RecommendTab();
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('추천상품 탭'));
   }
 }
 
