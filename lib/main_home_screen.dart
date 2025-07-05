@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'colors.dart';
+import 'video_detail_screen.dart';
 
 class MainHomeScreen extends StatefulWidget {
   final String role; // '무료회원' 또는 '프로회원'
@@ -12,17 +13,28 @@ class MainHomeScreen extends StatefulWidget {
 class _MainHomeScreenState extends State<MainHomeScreen> {
   int _selectedIndex = 0;
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is int && args != _selectedIndex) {
+      setState(() {
+        _selectedIndex = args;
+      });
+    }
+  }
+
   // 무료회원: 홈-요약본-요금제-마이, 프로회원: 홈-요약본-추천상품-마이
   List<_TabItem> get _tabs =>
       widget.role == '프로회원'
           ? [
-            _TabItem('홈', Icons.home, const _HomeTab()),
+            _TabItem('홈', Icons.home, _HomeTab(onGoToDetail: _goToDetail)),
             _TabItem('요약본', Icons.menu, const _SummaryTab()),
             _TabItem('추천상품', Icons.inventory_2, const _RecommendTab()),
             _TabItem('마이', Icons.person, const _MyTab()),
           ]
           : [
-            _TabItem('홈', Icons.home, const _HomeTab()),
+            _TabItem('홈', Icons.home, _HomeTab(onGoToDetail: _goToDetail)),
             _TabItem('요약본', Icons.menu, const _SummaryTab()),
             _TabItem('요금제', Icons.attach_money, const _PlanTab()),
             _TabItem('마이', Icons.person, const _MyTab()),
@@ -64,6 +76,35 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       ),
     );
   }
+
+  Future<void> _goToDetail(
+    String image,
+    String title,
+    String desc,
+    List<String> summary,
+  ) async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder:
+            (_) => VideoDetailScreen(
+              image: image,
+              title: title,
+              desc: desc,
+              summary: summary,
+              role: widget.role,
+            ),
+      ),
+    );
+    if (result == 'go_summary') {
+      setState(() {
+        _selectedIndex = 1;
+      });
+    } else if (result == 'go_plan') {
+      setState(() {
+        _selectedIndex = 2;
+      });
+    }
+  }
 }
 
 class _TabItem {
@@ -74,7 +115,9 @@ class _TabItem {
 }
 
 class _HomeTab extends StatefulWidget {
-  const _HomeTab();
+  final Future<void> Function(String, String, String, List<String>)
+  onGoToDetail;
+  const _HomeTab({required this.onGoToDetail});
   @override
   State<_HomeTab> createState() => _HomeTabState();
 }
@@ -117,25 +160,6 @@ class _HomeTabState extends State<_HomeTab> {
       _hasResult = false;
       _errorText = null;
     });
-  }
-
-  void _goToDetail(
-    String image,
-    String title,
-    String desc,
-    List<String> summary,
-  ) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder:
-            (_) => VideoDetailScreen(
-              image: image,
-              title: title,
-              desc: desc,
-              summary: summary,
-            ),
-      ),
-    );
   }
 
   @override
@@ -227,7 +251,7 @@ class _HomeTabState extends State<_HomeTab> {
               '최종 정리 및 영상 마무리',
             ],
             onTap:
-                () => _goToDetail(
+                () => widget.onGoToDetail(
                   'assets/video1.png',
                   '김국진의 어프로치',
                   '김국진의 스윙은 어떻게 나오는 걸까? 김국진의 골프레슨!',
@@ -251,7 +275,7 @@ class _HomeTabState extends State<_HomeTab> {
               '골프 드라이버 스윙 요령',
             ],
             onTap:
-                () => _goToDetail(
+                () => widget.onGoToDetail(
                   'assets/video2.png',
                   '김국진 골프 특강 #1',
                   '드라이버 레슨과 김국진의 골프 스타일',
@@ -268,7 +292,7 @@ class _HomeTabState extends State<_HomeTab> {
             desc: '백스윙 딱 이 3가지만 알고계세요!! 김국진 백스윙의 모든것!',
             summary: const ['백스윙의 중요 요소', '백스윙 연습의 중요 포인트', '백스윙의 기본 원리'],
             onTap:
-                () => _goToDetail(
+                () => widget.onGoToDetail(
                   'assets/video3.png',
                   '백스윙의 3포인트',
                   '백스윙 딱 이 3가지만 알고계세요!! 김국진 백스윙의 모든것!',
@@ -285,7 +309,7 @@ class _HomeTabState extends State<_HomeTab> {
               '방향 설정의 중요성',
             ],
             onTap:
-                () => _goToDetail(
+                () => widget.onGoToDetail(
                   'assets/video4.png',
                   '양용은프로의 원포인트 레슨',
                   '양용은 프로가 알려주는 스윙 연습 비법! 연습할 때 이것 하나만 있으면 충분!?',
@@ -309,7 +333,7 @@ class _HomeTabState extends State<_HomeTab> {
               '정리 및 영상 마무리',
             ],
             onTap:
-                () => _goToDetail(
+                () => widget.onGoToDetail(
                   'assets/video1.png',
                   '김국진의 어프로치',
                   '김국진의 스윙은 어떻게 나오는 걸까? 김국진의 골프레슨!',
@@ -327,7 +351,7 @@ class _HomeTabState extends State<_HomeTab> {
             desc: '드라이버 레슨과 김국진의 골프 스타일',
             summary: const ['드라이버 대충 쳐도 잘 나가는 법', '골프 드라이버 스윙 요령'],
             onTap:
-                () => _goToDetail(
+                () => widget.onGoToDetail(
                   'assets/video2.png',
                   '김국진 골프 특강 #1',
                   '드라이버 레슨과 김국진의 골프 스타일',
@@ -340,7 +364,7 @@ class _HomeTabState extends State<_HomeTab> {
             desc: '백스윙 딱 이 3가지만 알고계세요!! 김국진 백스윙의 모든것!',
             summary: const ['백스윙의 중요 요소', '백스윙 연습의 중요 포인트', '백스윙의 기본 원리'],
             onTap:
-                () => _goToDetail(
+                () => widget.onGoToDetail(
                   'assets/video3.png',
                   '백스윙의 3포인트',
                   '백스윙 딱 이 3가지만 알고계세요!! 김국진 백스윙의 모든것!',
@@ -357,7 +381,7 @@ class _HomeTabState extends State<_HomeTab> {
               '방향 설정의 중요성',
             ],
             onTap:
-                () => _goToDetail(
+                () => widget.onGoToDetail(
                   'assets/video4.png',
                   '양용은프로의 원포인트 레슨',
                   '양용은 프로가 알려주는 스윙 연습 비법! 연습할 때 이것 하나만 있으면 충분!?',
@@ -458,58 +482,5 @@ class _MyTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(child: Text('마이 탭'));
-  }
-}
-
-class VideoDetailScreen extends StatelessWidget {
-  final String image;
-  final String title;
-  final String desc;
-  final List<String> summary;
-  const VideoDetailScreen({
-    required this.image,
-    required this.title,
-    required this.desc,
-    required this.summary,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0.5,
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(24),
-          children: [
-            Image.asset(image, fit: BoxFit.cover),
-            const SizedBox(height: 24),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Text(desc, style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 24),
-            const Text(
-              '영상 요약',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            ...summary.asMap().entries.map(
-              (e) => Text(
-                '${e.key + 1}. ${e.value}',
-                style: const TextStyle(fontSize: 15),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
