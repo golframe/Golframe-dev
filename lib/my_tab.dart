@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'edit_profile_screen.dart';
 import 'change_password_screen.dart';
+import 'withdraw_screen.dart';
 
 class MyTab extends StatelessWidget {
   final String role;
@@ -109,6 +110,24 @@ class MyTab extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
                 color: Colors.black,
+              ),
+            ),
+          ),
+        ),
+        Center(
+          child: TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => WithdrawScreen()),
+              );
+            },
+            child: const Text(
+              '회원탈퇴',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.red,
               ),
             ),
           ),

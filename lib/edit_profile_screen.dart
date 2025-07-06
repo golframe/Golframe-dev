@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'withdraw_screen.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final String email;
@@ -233,7 +234,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           const SizedBox(height: 40),
           Center(
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => WithdrawScreen()),
+                );
+              },
               child: const Text(
                 '회원 탈퇴하기',
                 style: TextStyle(
