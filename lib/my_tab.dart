@@ -4,6 +4,8 @@ import 'edit_profile_screen.dart';
 import 'change_password_screen.dart';
 import 'withdraw_screen.dart';
 import 'subscription_history_screen.dart';
+import 'terms_screen.dart';
+import 'privacy_screen.dart';
 
 class MyTab extends StatelessWidget {
   final String role;
@@ -106,8 +108,24 @@ class MyTab extends StatelessWidget {
         const SizedBox(height: 32),
         _SectionTitle('서비스'),
         _MyDivider(),
-        _MenuItem(title: '이용약관', onTap: () {}),
-        _MenuItem(title: '개인정보처리방침', onTap: () {}),
+        _MenuItem(
+          title: '이용약관',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => TermsScreen()),
+            );
+          },
+        ),
+        _MenuItem(
+          title: '개인정보처리방침',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => PrivacyScreen()),
+            );
+          },
+        ),
         const SizedBox(height: 40),
         Center(
           child: TextButton(
