@@ -3,6 +3,7 @@ import 'login_screen.dart';
 import 'edit_profile_screen.dart';
 import 'change_password_screen.dart';
 import 'withdraw_screen.dart';
+import 'subscription_history_screen.dart';
 
 class MyTab extends StatelessWidget {
   final String role;
@@ -84,7 +85,19 @@ class MyTab extends StatelessWidget {
         const SizedBox(height: 32),
         _SectionTitle('결제관리'),
         _MyDivider(),
-        _MenuItem(title: '구독 내역', onTap: () {}),
+        _MenuItem(
+          title: '구독 내역',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (_) =>
+                        SubscriptionHistoryScreen(onGoToPlanTab: onGoToPlanTab),
+              ),
+            );
+          },
+        ),
         _MenuItem(
           title: '요금제 변경',
           onTap: role == '무료회원' ? onGoToPlanTab : null,
